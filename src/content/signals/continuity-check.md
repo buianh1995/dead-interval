@@ -13,4 +13,4 @@ shareQuote: {"text":"The monitor's answer was PASS."}
 ---
 `Previous committed sequence: 417. Next committed sequence: 419. Continuity status: PASS.`
 
-The monitor's answer was PASS. The field for missing records had no value. The operator had drawn a box around the empty field before the report was scanned. |
+The monitor's answer was PASS. The field for missing records had no value. The operator had drawn a box around the empty field before the report was scanned.

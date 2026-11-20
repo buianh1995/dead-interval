@@ -1,0 +1,27 @@
+.studio { max-width: 1660px; margin: auto; padding: clamp(14px, 3vw, 40px); }
+.studio-heading, .studio-preview-bar, .studio-selects, .studio-actions { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.studio-heading { margin-bottom: 22px; }
+.studio-heading h1 { font: 700 clamp(2.6rem,6vw,4.5rem)/1 var(--display); margin: 0 0 8px; }
+.studio-heading p:not(.eyebrow), #studio-meta { color: var(--muted); }
+.studio-grid { display: grid; grid-template-columns: minmax(320px,.9fr) minmax(0,1.55fr); gap: 18px; align-items: start; }
+.studio-panel { min-width:0; background: var(--panel); border: 1px solid var(--line); padding: 16px; }
+.studio label:not(.check-field) { display: grid; gap: 5px; font-weight: 600; }
+.studio select { min-height: 44px; border: 1px solid var(--border); background: var(--void); border-radius: 4px; padding: 8px; max-width: 100%; }
+.studio label { min-width: 0; }
+.studio input:not([type=checkbox]), .studio textarea { width: 100%; }
+.studio textarea { resize: vertical; min-height: 68px; font-family: var(--mono); }
+.studio textarea[data-key=bodyMarkdown], .studio textarea[data-key=excerptBody] { min-height: 180px; }
+.studio details { margin-top: 12px; padding: 10px; border: 1px solid var(--line); }
+.studio summary { cursor: pointer; }
+.studio .check-field { display:flex; align-items:center; gap:8px; }
+.studio-actions { justify-content: flex-start; margin-top: 18px; }
+.studio-actions a { text-decoration: underline; }
+.studio-actions button:disabled { opacity: .58; cursor: default; }
+#studio-status, #preview-status { margin-block: 10px; white-space: pre-line; }
+.studio-frame { overflow: auto; background: var(--void); border: 1px solid var(--line); min-height: 65vh; }
+.studio-frame iframe { display:block; width: max(100%, 760px); height: 75vh; border: 0; }
+.studio-frame iframe.phone { margin-inline: auto; width: min(100%,390px); }
+#studio-review { position: fixed; inset: 0; margin: auto; width: min(720px,95vw); padding: 22px; color: var(--text); background: var(--panel); border: 1px solid var(--border); }
+#studio-review::backdrop { background: #100c18d9; }
+#review-changes { overflow:auto; max-height:45vh; white-space:pre-wrap; overflow-wrap:anywhere; margin-block:14px; }
+@media (max-width: 860px) { .studio-grid { grid-template-columns: 1fr; } }

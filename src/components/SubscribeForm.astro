@@ -1,0 +1,19 @@
+---
+import { username } from '../lib/publishing';
+interface Props { id: string; clearance?: boolean; preview?: boolean }
+const {id, clearance = false, preview = false} = Astro.props;
+const message = clearance ? 'Get clearance alerts' : 'Subscribe';
+---
+{username || preview ? <>
+  <form action={!preview && username ? 'https://buttondown.com/api/emails/embed-subscribe/' + username : undefined} method="post">
+    <label for={id}>Email address</label>
+    <div class="input-row">
+      <input id={id} name="email" type="email" autocomplete="email" required disabled={preview} />
+      <input name="embed" type="hidden" value="1" />
+      <button class="button primary" type="submit" disabled={preview}>{message}</button>
+    </div>
+    <p>Check your inbox for a confirmation link after signing up.</p>
+  </form>
+  {!preview && <a href={'https://buttondown.com/' + username}>Open the Buttondown signup page</a>}
+</> : <p>Subscriptions are unavailable in this preview.</p>}
+{clearance && <p><a href={!preview ? '/privacy/' : undefined}>Privacy</a></p>}

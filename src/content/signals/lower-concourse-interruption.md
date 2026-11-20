@@ -12,4 +12,4 @@ seo: {"title":"Lower Concourse Interruption | Dead Interval","description":"A re
 ---
 `Feed: six pale squares above the waterline.`
 
-The responder counts five on the wall. She asks dispatch to read the number back and hears her own voice answer, a few seconds ahead of her transmission. The next frame shows dry concrete. |
+The responder counts five on the wall. She asks dispatch to read the number back and hears her own voice answer, a few seconds ahead of her transmission. The next frame shows dry concrete.

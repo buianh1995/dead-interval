@@ -3,7 +3,6 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Share from '../../components/Share.astro';
 import { getArchive } from '../../lib/archive';
-import { site } from '../../data/site';
 export async function getStaticPaths() {
   const archive = await getArchive();
   return archive.signals.map(entry => ({
@@ -23,7 +22,7 @@ const puzzlePath = puzzle?.evidenceSignalIds.includes(item.id) ? casePath + '#' 
     <div class="dossier-head">
       <a class="breadcrumb" href="/signals/">Signals</a>
       <p class="record-line">{item.archiveStamp} · {item.format}</p>
-      <h1>{item.title}</h1><p class="lead">{item.summary}</p><p class="fiction">{site.description}</p>
+      <h1>{item.title}</h1><p class="lead">{item.summary}</p>
     </div>
     {item.presentation === 'puzzle-reward' && <p class="spoiler">Contains puzzle spoilers</p>}
     <div class="prose evidence"><Content /></div>

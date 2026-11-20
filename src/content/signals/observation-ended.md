@@ -12,4 +12,4 @@ seo: {"title":"Observation Ended | Dead Interval","description":"A handwritten e
 ---
 `Observation ended 02:40.`
 
-The final camera frame shows an empty chair and a red light reflected in the glass. After the light went out, the witness shifted her coat one seat to the left. She asked staff to leave the second chair where it was. |
+The final camera frame shows an empty chair and a red light reflected in the glass. After the light went out, the witness shifted her coat one seat to the left. She asked staff to leave the second chair where it was.

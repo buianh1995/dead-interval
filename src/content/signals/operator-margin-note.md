@@ -12,4 +12,4 @@ seo: {"title":"Operator Margin Note | Dead Interval","description":"An additiona
 ---
 `Unfiled sequence: 418.`
 
-I wrote PRESENT while the room was quiet. I was asked to change it to AVAILABLE so the form would accept it. I left the form on the desk. — M. Voss |
+I wrote PRESENT while the room was quiet. I was asked to change it to AVAILABLE so the form would accept it. I left the form on the desk. — M. Voss

@@ -150,14 +150,14 @@ interface PublishedScript {
 
 | Mốc | Công việc | Khi hoàn thành |
 | --- | --- | --- |
-| 1 · Sửa dữ liệu và giao diện công khai | Gỡ đoạn trùng/pipe thừa, bỏ mô tả ở Case và Entity, tách form dùng chung và thêm panel SEALED. | Chạy build tĩnh, đối chiếu các trang trước/sau, thử form có cấu hình giả và không cấu hình, chưa gửi email thật khi thiếu tài khoản kiểm thử. |
+| 1 · Sửa dữ liệu và giao diện công khai | Gỡ đoạn trùng/pipe thừa, bỏ mô tả lặp ở Case, Entity và Signal, tách form dùng chung và thêm panel SEALED. | Chạy build tĩnh, đối chiếu các trang trước/sau, thử form có cấu hình giả và không cấu hình, chưa gửi email thật khi thiếu tài khoản kiểm thử. |
 | 2 · Chia sẻ renderer và mở Studio local | Tách component, schema và quy tắc Markdown dùng chung, thử route dev-only trên Astro đang cài, thêm editor và preview chỉ đọc. | HTML của nội dung đã lưu giữa preview và permalink tương đương tại desktop/mobile; thay đổi chưa lưu chỉ xuất hiện trong iframe. |
 | 3 · Ghi file và kịch bản | Làm lưu nháp, revision, validate trước ghi, ghi nguyên tử một tệp, và quy tắc liên kết script theo Case. Thêm panel soạn trích đoạn và xem thay đổi trước ghi. | Lưu và nạp lại đúng Markdown/Unicode. Sửa một record không đổi những record khác. Tác giả dùng được luồng xem trước và ghi từ đầu tới cuối. |
 | 4 · Nghiệm thu dev và production | Chạy ma trận dưới đây, cập nhật README về lệnh Studio, phạm vi v1 và cách phục hồi bản nháp. Kiểm phát hành bằng artifact tĩnh. | Cả build mặc định lẫn build với cờ Studio bật đều không chứa công cụ và nháp. |
 
 | Mã | Kiểm thử bắt buộc |
 | --- | --- |
-| **PUB-01** | Mara chỉ có đoạn của mình; Pair Nine vẫn đủ; 4 Case và 4 Entity đúng ID, metadata, quan hệ và trạng thái. Tám trang không có mô tả chung trong `main`, footer còn đúng một bản. Sáu Signal không còn dấu `|` thừa, puzzle giải được. |
+| **PUB-01** | Mara chỉ có đoạn của mình; Pair Nine vẫn đủ; 4 Case và 4 Entity đúng ID, metadata, quan hệ và trạng thái. Mười bốn trang chi tiết không có mô tả chung trong `main`, footer còn đúng một bản. Sáu Signal không còn dấu `|` thừa, puzzle giải được. |
 | **PUB-02** | Hai SEALED có panel trong thân, hai Case mở không có panel đó. Thử tab, focus và layout mobile; bản có cấu hình sinh form POST chuẩn, bản không cấu hình hiện copy preview. Kiểm xác nhận và hủy đăng ký bằng tài khoản/hộp thư được cấp trước khi phát hành. |
 | **ST-01** | Mở Case, Entity và Script; sửa tóm tắt/Markdown; xem desktop/mobile, chuyển nhanh giữa hai hồ sơ trong lúc preview đang tải. Khung không render nhầm mục, không gửi form hoặc tải media ngoài. Đối chiếu cấu trúc DOM với route công khai sau lưu. |
 | **ST-02** | Lưu nháp rồi đóng/mở lại Studio. Reload khi đang gõ và kiểm khôi phục bản đệm đúng mục. Sửa hai tab cùng file, thử file bị khóa trên Windows và file được chỉnh ngoài Studio. Bản mới không ghi đè lặng lẽ; lỗi giữ văn bản đã nhập và file gốc. Kiểm UTF-8, trạng thái lỗi schema, kích thước payload và đường dẫn sai. |

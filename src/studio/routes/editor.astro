@@ -1,0 +1,59 @@
+---
+import '../../styles/global.css';
+import '../studio.css';
+import { privateHeaders, session } from '../server/session';
+export const prerender = false;
+let nonce;
+try { nonce=session(Astro,true).nonce; } catch { return new Response('Not found.',{status:404,headers:privateHeaders}); }
+for (const [name,value] of Object.entries(privateHeaders)) Astro.response.headers.set(name,value);
+Astro.response.headers.set('Content-Security-Policy',"frame-ancestors 'none'; object-src 'none'; base-uri 'none'");
+---
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" /><title>Script Studio · Dead Interval</title>
+</head>
+<body>
+  <main class="studio" data-studio data-nonce={nonce}>
+    <header class="studio-heading">
+      <div><p class="eyebrow">Dead Interval</p><h1>Script Studio</h1><p>Soạn nội dung và xem trước trên máy local.</p></div>
+      <a href="/" class="button secondary" target="_blank" rel="noopener">Mở website</a>
+    </header>
+    <div class="studio-grid">
+      <section class="studio-panel" aria-label="Soạn nội dung">
+        <div class="studio-selects">
+          <label>Loại nội dung<select id="studio-group"><option value="cases">Hồ sơ</option><option value="entities">Thực thể</option><option value="scripts">Kịch bản</option></select></label>
+          <label>Mục đang soạn<select id="studio-record"></select></label>
+        </div>
+        <p id="studio-meta" class="notice"></p>
+        <form id="studio-form"><div id="studio-fields"></div></form>
+        <div class="studio-actions">
+          <button class="button secondary" id="save-draft" disabled>Lưu bản nháp</button>
+          <button class="button primary" id="apply-record" disabled>Ghi vào kho công khai</button>
+          <button class="button secondary" id="discard-buffer" disabled>Bỏ phần chưa lưu</button>
+          <a id="open-record" target="_blank" rel="noopener" hidden>Mở trang hồ sơ</a>
+        </div>
+        <p id="studio-status" role="status" aria-live="polite">Đang tải kho nội dung…</p>
+      </section>
+      <section class="studio-panel studio-preview" aria-label="Xem trước giao diện">
+        <div class="studio-preview-bar">
+          <label>Chế độ<select id="preview-mode"><option value="public">Xem trước trang công khai</option><option value="full">Bản đầy đủ · Chỉ local</option></select></label>
+          <label>Khung hình<select id="preview-width"><option value="desktop">Máy tính</option><option value="phone">Điện thoại</option></select></label>
+        </div>
+        <p class="notice" id="preview-status" role="status">Đang chờ dữ liệu…</p>
+        <div class="studio-frame">
+          <iframe title="Bản xem trước Dead Interval" sandbox="allow-same-origin"></iframe>
+        </div>
+      </section>
+    </div>
+    <dialog id="studio-review"><form method="dialog">
+      <h2>Xác nhận cập nhật nguồn</h2>
+      <p id="review-path"></p><pre id="review-changes"></pre>
+      <div class="button-row"><button value="cancel" class="button secondary" autofocus>Quay lại</button>
+      <button value="accept" class="button primary">Xác nhận ghi</button></div>
+    </form></dialog>
+  </main>
+  <script src="../client/editor.ts"></script>
+</body>
+</html>

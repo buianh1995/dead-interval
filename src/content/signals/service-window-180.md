@@ -12,4 +12,4 @@ seo: {"title":"Service Window 180 | Dead Interval","description":"Bay Six closes
 ---
 `Sequence 417 · Bay Six · Service window closed.`
 
-The pump was taken out of service at the end of the lease. Staff entered the closure before leaving the bay. A handwritten note in the margin asks whether the remaining observation goes in a new ticket. |
+The pump was taken out of service at the end of the lease. Staff entered the closure before leaving the bay. A handwritten note in the margin asks whether the remaining observation goes in a new ticket.

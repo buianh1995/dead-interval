@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseDossier from '../../components/CaseDossier.astro';
+import EntityProfile from '../../components/EntityProfile.astro';
+import PublicScript from '../../components/PublicScript.astro';
+import { projectSnapshot } from '../server/records';
+import { renderMarkdown } from '../server/rendering';
+import { privateHeaders, session, StudioError } from '../server/session';
+import { getSnapshot } from '../server/snapshots';
+export const prerender = false;
+const headers={...privateHeaders,'Content-Security-Policy':"default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; form-action 'none'; frame-ancestors 'self'; base-uri 'none'; sandbox allow-same-origin"};
+for (const [name,value] of Object.entries(headers)) Astro.response.headers.set(name,value);
+let record;
+let body = '';
+let script = '';
+try {
+  const {id}=session(Astro);
+  record=await projectSnapshot(getSnapshot(id,Astro.params.id??''));
+  body=await renderMarkdown(record.body);
+  if (record.kind==='case' && record.script) script=await renderMarkdown(record.script.bodyMarkdown);
+} catch(e) {
+  return new Response('Preview unavailable.',{status:e instanceof StudioError?e.status:422,headers});
+}
+---
+<Base title="Studio preview" preview indexable={false}>
+  {record.kind==='case' ? (
+    <CaseDossier item={record.item} archive={record.archive} preview permalink={'/cases/'+record.item.slug+'/'}>
+      <Fragment slot="body" set:html={body} />
+      {record.script && <PublicScript slot="script" title={record.script.title}><Fragment set:html={script} /></PublicScript>}
+    </CaseDossier>
+  ) : (
+    <EntityProfile item={record.item} cases={record.archive.cases.filter(({data})=>data.entityIds.includes(record.item.id))}>
+      <Fragment slot="body" set:html={body} />
+    </EntityProfile>
+  )}
+</Base>

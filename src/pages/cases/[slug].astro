@@ -1,11 +1,9 @@
 ---
 import { render } from 'astro:content';
+import CaseDossier from '../../components/CaseDossier.astro';
+import PublicScript from '../../components/PublicScript.astro';
 import Base from '../../layouts/Base.astro';
-import Artwork from '../../components/Artwork.astro';
-import Puzzle from '../../components/Puzzle.astro';
-import Share from '../../components/Share.astro';
-import { copy, site } from '../../data/site';
-import { getArchive } from '../../lib/archive';
+import { getArchive, findScript } from '../../lib/archive';
 export async function getStaticPaths() {
   const archive = await getArchive();
   return archive.cases.map(entry => ({params: {slug: entry.data.slug}, props: {entry, archive}}));
@@ -14,67 +12,12 @@ const {entry, archive} = Astro.props;
 const item = entry.data;
 const isSealed = item.state === 'sealed';
 const Content = isSealed ? undefined : (await render(entry)).Content;
-const signals = item.signalIds.map(id => archive.signals.find(({data}) => data.id === id)!.data);
-const entities = item.entityIds.map(id => archive.entities.find(({data}) => data.id === id)!.data);
-const puzzle = isSealed ? undefined : item.puzzle;
-const reward = puzzle && archive.signals.find(({data}) => data.id === puzzle.rewardSignalId)!.data;
-const next = archive.cases.find(other => other.data.order > item.order)?.data;
-const release = item.state === 'released' ? item.release : undefined;
-const script = item.state === 'released' && archive.scripts.find(({data}) => data.id === item.scriptId);
+const script = item.state === 'released' && findScript(archive.scripts, item);
 const Script = script ? (await render(script)).Content : undefined;
 ---
 <Base {...item.seo}>
-  <article class="wrap dossier">
-    <div class="dossier-head">
-      <a class="breadcrumb" href="/cases/">Case files</a>
-      <div class="record-line"><span>{item.number}</span><span class:list={['state', item.state]}>{copy.states[item.state]}</span></div>
-      <h1>{item.title}</h1><p class="lead">{item.summary}</p><p class="fiction">{site.description}</p>
-    </div>
-    <figure class="dossier-art"><Artwork art={item.art} />{item.art.kind === 'concept' && <figcaption>{item.art.image.caption ?? 'Concept art'}</figcaption>}</figure>
-    <div class="dossier-grid">
-      <div>
-        {release && <section class="record-panel">
-          <h2>Watch the episode</h2>
-          <div class="video" data-video={release.videoId}>
-            <img src={release.poster.src} alt={release.poster.alt} loading="lazy" />
-            <button type="button" class="button primary" hidden>Play episode</button>
-          </div>
-          <a href={'https://www.youtube.com/watch?v=' + release.videoId}>Watch on YouTube</a>
-        </section>}
-        {Content && <div class="prose"><Content /></div>}
-        {isSealed ? <p class="record-panel">{item.embargoMessage}</p> : <p class="case-question">{item.closingQuestion}</p>}
-        {puzzle && reward && <Puzzle puzzle={puzzle} evidence={puzzle.evidenceSignalIds.map(id => signals.find(signal => signal.id === id)!)} reward={reward} />}
-        {Script && script && <section class="prose"><h2>{script.data.title}</h2><Script /></section>}
-        {!isSealed && item.gallery?.length && <section class="gallery"><h2>Keyframes</h2>{item.gallery.map(image =>
-           <figure><img src={image.src} alt={image.alt} loading="lazy" />{image.caption && <figcaption>{image.caption}</figcaption>}</figure>
-        )}</section>}
-        <Share path={Astro.url.pathname} title={item.title} quote={item.shareQuote} />
-      </div>
-      <aside class="sidebar" aria-label="Related archive records">
-        <section class="record-panel"><h2>Signals</h2><ul class="related">{signals.map(signal =>
-          <li><a href={'/signals/' + signal.slug + '/'}>{signal.title}</a><small>{signal.archiveStamp}</small></li>
-        )}</ul></section>
-        {entities.length > 0 && <section class="record-panel"><h2>Entities</h2><ul class="related">{entities.map(entity =>
-          <li><a href={'/entities/' + entity.slug + '/'}>{entity.title}</a></li>
-        )}</ul></section>}
-        {next && <section class="record-panel"><h2>Next case</h2><a href={'/cases/' + next.slug + '/'}>{next.title}</a></section>}
-        <a class="button secondary" href="/subscribe/">Get release notes</a>
-      </aside>
-    </div>
-  </article>
+  <CaseDossier item={item} archive={archive}>
+    {Content && <Content slot="body" />}
+    {Script && script && <PublicScript slot="script" title={script.data.title}><Script /></PublicScript>}
+  </CaseDossier>
 </Base>
-<script>
-  for (const container of document.querySelectorAll<HTMLElement>('[data-video]')) {
-    const button = container.querySelector('button')!;
-    button.hidden = false;
-    button.addEventListener('click', () => {
-      const frame = document.createElement('iframe');
-      frame.src = 'https://www.youtube-nocookie.com/embed/' + container.dataset.video + '?autoplay=1';
-      frame.title = 'Episode player';
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture';
-      frame.allowFullscreen = true;
-      container.replaceChildren(frame);
-      frame.focus();
-    });
-  }
-</script>

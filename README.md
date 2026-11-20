@@ -14,6 +14,27 @@ npm run preview
 
 Dùng Node.js 24 LTS. Bản build nằm trong `dist/`. Giữ `PUBLIC_ARCHIVE_PUBLIC=false` cho preview.
 
+## Studio local
+
+```powershell
+npm run studio
+```
+
+Mở [Studio local](http://127.0.0.1:4322/studio/). Chọn **Case**, **Entity** hoặc **Kịch bản**, nhập nội dung rồi đối chiếu khung xem trước ở chế độ desktop hoặc mobile. **Lưu nháp** ghi vào `.studio/drafts/`. **Ghi vào kho công khai** hiển thị tệp đích và yêu cầu xác nhận.
+
+Case `in-development` có thể xem trước trích đoạn. Khi Case đã `released`, **Ghi trích đoạn công khai** ghi phần được duyệt vào `src/content/scripts/`. Toàn bản nháp và ghi chú tác giả lưu riêng. Sau khi ghi công khai, đối chiếu permalink bằng bản tĩnh.
+
+```powershell
+npm run check
+npm run build
+$env:DEAD_INTERVAL_STUDIO = '1'
+try { npm run build } finally { Remove-Item Env:DEAD_INTERVAL_STUDIO }
+Test-Path dist/studio
+npm run preview
+```
+
+`Test-Path` cần trả về `False`. Studio chạy ở loopback qua lệnh riêng phía trên.
+
 ## Cập nhật nội dung
 
 - Hồ sơ, thực thể và vật chứng nằm trong `src/content/cases`, `src/content/entities` và `src/content/signals`. Mỗi mục là một tệp Markdown có frontmatter. Giữ nguyên `id` và `slug` của trang đã chia sẻ.

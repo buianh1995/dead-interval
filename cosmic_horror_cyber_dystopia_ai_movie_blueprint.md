@@ -16,20 +16,45 @@
 
 ---
 
-## 2. HẠ TẦNG PHẦN CỨNG & KIẾN TRÚC AI AGENT
+## 2. HẠ TẦNG PHẦN CỨNG VÀ PHÂN VAI KỸ THUẬT
 
-### 2.1. Cấu hình Workstation Local
-* **GPU:** NVIDIA RTX 5080 (16GB VRAM)
-* **CPU:** AMD Ryzen 7 9700X
-* **RAM:** 64GB DDR5
-* **Nguyên tắc sử dụng tài nguyên:** Ưu tiên tối đa các model mã nguồn mở (Apache 2.0 / MIT) chạy local trong ngưỡng $\le 16\text{GB}$ VRAM hoặc offload qua 64GB RAM.
+### 2.1. Tầng 1 · Kiến trúc, kịch bản và công cụ trên cloud
 
-### 2.2. Kiến trúc Điều phối Agent (Hybrid Workflow)
-* **Não bộ Kiến trúc sư (Cloud - Giao diện Web):** Sử dụng tài khoản Google AI Pro trên nền tảng Web (nơi quota được tách riêng, ổn định) để brain-storm ý tưởng, nghiên cứu tài liệu, viết kịch bản chi tiết và thiết kế kiến trúc hệ thống. *(Lưu ý: Không dùng tài khoản Pro dạng Family sharing cho Antigravity CLI vì dễ dính giới hạn quota chung).*
-* **Tay chân Thực thi (100% Local trên PC):**
-  * **IDE & Agent Harness:** VS Code kết hợp extension **Cline** hoặc **Roo Code**.
-  * **Local LLM Backend:** Chạy **Ollama** với các model chuyên code (như Qwen-Coder / DeepSeek bản quantized 14B–32B) để tự động đọc cây thư mục, viết script Python, sửa lỗi vòng lặp và quản lý pipeline mà không tốn chi phí API.
-  * **Giao thức kết nối công cụ (MCP - Model Context Protocol):** Cắm Filesystem MCP, Git MCP, **Blender MCP** và các custom Python MCP server để AI trực tiếp điều khiển quá trình dựng cảnh 3D, sinh ảnh, ghép âm thanh và render video.
+| Thành viên | Trách nhiệm | Bàn giao |
+| --- | --- | --- |
+| **Chủ dự án** | Chốt canon, giọng kể, chất lượng hình và tiếng, quyết định xuất bản. | Bản kịch bản và nội dung công khai đã duyệt. |
+| **Gemini · Google AI Pro trên Web** | Dẫn dắt Doc-First, viết spec, phản biện marketing và review phương án kỹ thuật. Cùng chủ dự án phát triển cốt truyện, viết nháp tiếng Anh và lập bảng phân cảnh. | Spec được duyệt cho Codex. Kịch bản tự sự khoảng 1.200–1.800 từ kèm 25–35 cảnh, tùy nhịp tập. |
+| **Codex** | Đọc repo và triển khai spec đã chốt. Phụ trách Astro, `/studio`, kiểm thử, build tĩnh và tooling Python/FFmpeg. Ở giai đoạn sản xuất, viết bộ xuất lời thoại cho Zonos 3 Mini, xuất prompt cho MiniMax H3 Image và tích hợp Blender MCP hoặc MCP tùy chỉnh khi cần. | Thay đổi đã kiểm thử, hướng dẫn chạy và công cụ có đầu vào/đầu ra rõ ràng. |
+| **NotebookLM · Free** | Tra chéo lore, mốc thời gian và hồ sơ nhân vật từ Blueprint, các tập đã duyệt và tài liệu nghiên cứu. Dẫn về đoạn nguồn khi báo mâu thuẫn. | Danh sách điểm cần sửa hoặc cần tác giả quyết định. Repo giữ bản canon. |
+| **Claude · Free trên Web** | Đọc lượt cuối trước thu âm. Gợi ý sửa câu tiếng Anh khó đọc thành tiếng, nhịp thoại và đoạn giải thích quá tay, giữ giọng lạnh và tiết chế. | Gợi ý sửa theo đoạn để tác giả chọn. |
+| **DeepSeek / Qwen / ChatGPT · Free trên Web** | Brainstorm góc kỹ thuật hoặc triết học và tạo biến thể hook, caption cho Reddit và X khi cần. | Phương án để tác giả chọn trong từng đợt nội dung. |
+
+### 2.2. Tầng 2 · Máy chính sản xuất đa phương tiện
+
+- **Máy chính** gồm Ryzen 7 9700X, RTX 5080 (16 GB VRAM), 64 GB DDR5, SSD NVMe 1 TB và PSU Corsair RM850e 850 W.
+- **Hình ảnh và chuyển động** dùng Blender + Blender MCP, Reshoot 4D, Splat Anything, MiniMax H3 Image, ComfyUI/Flux và PiH3 theo nhu cầu từng cảnh. H3 Regenerate 2K (IC) là bước tùy chọn trong kế hoạch. Xác minh bản triển khai, khả năng chạy local và chi phí trước khi đưa vào batch.
+- **Giọng và nhạc** dùng Zonos 3 Mini của Zyphra cho lời tự sự, Ace Music V1 cho nhạc nền Dark Ambient và Python + FFmpeg để ghép, mix và xuất bản xem thử.
+- **Coding dự phòng** dùng VS Code + Cline + Ollama để sửa script và tham số pipeline. Qwen-Coder / DeepSeek quantized 14B–32B là dải thử nghiệm. Chọn bản và độ dài context theo VRAM, RAM và tốc độ đo được. Nhường GPU cho job render đang chạy.
+- **Kiểm duyệt** dùng màn AOC U27G4 27 inch 4K Fast IPS 160 Hz cùng màn 34 inch hiện có để soi chi tiết, màu tím–đỏ và lỗi upscale. Loa Fenda T-220X kết hợp sub Enkor S2880 để nghe tiếng nền và dải trầm. Drone 432 Hz là một lựa chọn sáng tạo cho nhạc nền.
+
+### 2.3. Tầng 3 · Máy phụ, worker theo nhu cầu
+
+- **Máy phụ** gồm Ryzen 5 5600G, RX 6600 XT (8 GB VRAM), SSD NVMe và PSU 750 W Gold. Máy vẫn phục vụ bé hằng ngày, chỉ nhận job khi rảnh.
+- **Việc hậu kỳ** gồm ghép clip, burn phụ đề, tạo bản proxy và đóng gói MP4 bằng FFmpeg. Đưa job sang máy phụ khi cần giải phóng máy chính.
+- **LLM qua LAN** thử model 7B–8B quantized trên Ollama/Vulkan để hỗ trợ chat và sửa nhỏ khi RTX 5080 đang render. Dịch vụ chỉ phục vụ mạng nội bộ khi cần, sau khi xác nhận Ollama nhận đúng RX 6600 XT.
+- **Soạn tiếp từ máy phụ** bằng Remote Desktop vào PC chính hoặc chạy Studio trên checkout riêng ở PC phụ. Studio hiện nghe tại `127.0.0.1:4322`. Bản nháp trong `.studio/drafts/` ở trên máy lưu và nằm ngoài Git.
+
+### 2.4. Bàn giao từng giai đoạn của một tập
+
+| Giai đoạn | Chủ lực và hỗ trợ | Đầu ra bàn giao |
+| --- | --- | --- |
+| **1. Ý tưởng, spec và kịch bản** | Chủ dự án + Gemini. NotebookLM kiểm lore, nhóm AI Free góp ý khi cần. | Kịch bản và bảng phân cảnh đã duyệt, có ID cảnh ổn định. |
+| **2. Chuốt lời và soạn hồ sơ web** | Claude Free góp ý tiếng Anh. Chủ dự án chốt lời và xem trước bằng Astro `/studio`. | Lời sẵn sàng thu, hồ sơ hoặc teaser đã duyệt cho web. |
+| **3. Xuất dữ liệu cho sản xuất** | Codex triển khai Python/FFmpeg và tích hợp công cụ. Gemini review spec, Cline + Ollama hỗ trợ sửa nhỏ. | Manifest theo cảnh với `scene_id`, `speaker`, `spoken_text`, `visual_prompt`, `duration_target`. Đây là hợp đồng định hướng cho tooling giai đoạn sau. |
+| **4. Render hình và tiếng** | PC chính chạy TTS, ảnh, chuyển động và nhạc. PC phụ nhận việc nhẹ khi rảnh. | Track thoại, nhạc nền, keyframe và clip đã chọn cho timeline. |
+| **5. Hậu kỳ và xuất bản** | Python + FFmpeg trên PC phù hợp. Chủ dự án duyệt hình, tiếng và phụ đề. | MP4 và phụ đề cho YouTube. Cập nhật hồ sơ web khi tập phát hành. |
+
+Studio hiện phục vụ soạn và xem trước. Script sản xuất sẽ nhận dữ liệu đã duyệt qua một bước xuất riêng. Sau khi tập ở trạng thái `released`, Studio mới cho ghi trích đoạn vào `src/content/scripts/`. Tập đầu dùng một đoạn ngắn để đo thời gian render, số lần chạy lại và thời gian thao tác thực tế so với quỹ 1,5–2 giờ mỗi buổi.
 
 ---
 
@@ -39,8 +64,8 @@
 | :--- | :--- | :--- |
 | **1. Dựng bối cảnh 3D & Góc máy** | **Blender + Blender MCP**<br>**Reshoot 4D**<br>**Splat Anything** (11GB VRAM) | Dùng Agent điều khiển Blender MCP dựng khung kiến trúc Brutalist / Data Center ngầm để khóa chặt tính nhất quán không gian 3D. Hoặc dùng **Reshoot 4D** chuyển cảnh video sang không gian 3D thời gian thực để đặt camera ảo xoay góc máy chậm (*slow-burn orbit*). |
 | **2. Tạo ảnh Keyframe 4K** | **MiniMax H3 Image**<br>**ComfyUI / Flux** | Xuất ảnh độ phân giải 4K trong vài giây, hỗ trợ ảnh tham chiếu (*Reference Images*) để khóa tạo hình nhân vật và bối cảnh xuyên suốt cả tập phim. |
-| **3. Diễn hoạt Video & Upscale** | **MiniMax H3 / PiH3**<br>**Open H3 Regenerate 2K (bản IC)** | Dùng **PiH3** (tinh chỉnh 2–4 bước, tốc độ nhanh) tạo chuyển động từ keyframe. Bắt buộc chạy qua **Open H3 Regenerate 2K bản IC (In-Context Learning)** để upscale mượt mà, giữ sắc nét chi tiết khuôn mặt và kết cấu vật thể mà không bị bệt. |
-| **4. Giọng đọc Tự sự (Voiceover)** | **Zonos 3 Mini (Zyra)** *(1.8GB)* | Chạy 100% local, hỗ trợ zero-shot voice cloning, tinh chỉnh chi tiết nhịp thở, độ trầm, sự run rẩy và ngắt nghỉ cảm xúc. Giọng đọc mang phong thái lạnh lẽo, chiêm nghiệm kiểu tài liệu điều tra/triết học. |
+| **3. Diễn hoạt Video & Upscale** | **MiniMax H3 / PiH3**<br>**H3 Regenerate 2K (IC), tùy chọn** | Thử chuyển động từ keyframe trên các cảnh đã chọn. MiniMax mô tả H3 Base chạy local ở 768p và H3 Regenerate 2K là bước API. Chốt đường upscale sau khi thử trên clip thực tế. [MiniMax H3 Open](https://design.minimax.io/h3) |
+| **4. Giọng đọc Tự sự (Voiceover)** | **Zonos 3 Mini (Zyphra)** | Chạy local để tạo giọng đọc, tinh chỉnh nhịp thở và ngắt nghỉ. Giọng đọc mang phong thái lạnh lẽo, chiêm nghiệm kiểu tài liệu điều tra và triết học. |
 | **5. Âm nhạc & Sound Design** | **Ace Music V1**<br>FFmpeg Audio Processing | Tạo nhạc nền Dark Ambient, tiếng tụng kinh trầm hoặc hợp xướng ma mị; xuất tách riêng từng track vocal/nhạc cụ để dễ mix. Kết hợp các dải tần số thấp ($432\text{Hz}$ drone) và tiếng động cơ học/nhu động. |
 | **6. Hậu kỳ & Tự động hóa** | **Python Scripts + FFmpeg**<br>Scarlet (Open-source editor) | Viết script tự động gom hàng loạt clip đã render, khớp timeline với file audio từ Zonos 3 Mini, burn phụ đề chuẩn điện ảnh và xuất file thành phẩm. |
 
@@ -78,7 +103,7 @@ Toàn bộ kịch bản của kênh đi theo phong cách **"Tech-Grounded Cosmic
    * Tạo nhạc nền và hiệu ứng âm thanh (SFX) bằng **Ace Music V1**, mix sơ bộ thành track âm thanh chuẩn để khóa thời lượng từng cảnh.
 3. **Bước 3 — Sinh Hình Ảnh & Chuyển Động Hàng Loạt (45 phút):**
    * Dùng Agent (Cline/Python script) đẩy danh sách prompt qua **MiniMax H3 Image** để tạo bộ Keyframe 4K đồng nhất phong cách.
-   * Chọn lọc các cảnh đắt giá đưa qua **Reshoot 4D / PiH3** để tạo chuyển động chậm, sau đó chạy batch upscale qua **Open H3 Regenerate 2K (IC)**.
+   * Chọn các cảnh cần chuyển động chậm để thử qua **Reshoot 4D / PiH3**. Chạy batch upscale khi đã chọn được phương án phù hợp với clip thử.
 4. **Bước 4 — Đóng Gói Tự Động & Xuất Bản (15 phút):**
    * Chạy script **FFmpeg** tự động ghép các video clip khớp với thời lượng từng câu thoại, thêm hiệu ứng chuyển cảnh mờ (crossfade), phủ grain điện ảnh, nhúng phụ đề tiếng Anh chuẩn và xuất file MP4 hoàn chỉnh.
 
@@ -90,6 +115,6 @@ Toàn bộ kịch bản của kênh đi theo phong cách **"Tech-Grounded Cosmic
 
 ```text
 Tôi đang triển khai dự án kênh YouTube/Patreon quốc tế (tiếng Anh) chuyên về thể loại Cosmic Horror, Cyber-Dystopia và Triết học hiện sinh, dựa trên nền tảng kỹ thuật hệ thống và các sự kiện AI thực tế.
-Tôi có máy trạm local cấu hình: RTX 5080 (16GB VRAM), 64GB RAM, Ryzen 7 9700X, sử dụng pipeline Local AI (MiniMax H3 Image, Open H3 Regenerate 2K IC, Reshoot 4D, Zonos 3 Mini TTS, Ace Music V1, Blender MCP, Cline/Roo Code + Ollama, Python + FFmpeg).
+Đội hình kỹ thuật được mô tả ở Mục 2 của Blueprint. Gemini trên Google AI Pro hỗ trợ kiến trúc và viết kịch bản, Codex triển khai web và tooling, NotebookLM kiểm lore, Claude Free góp ý lời tiếng Anh. PC chính Ryzen 7 9700X, RTX 5080 16 GB và 64 GB RAM chạy pipeline đa phương tiện. PC phụ Ryzen 5 5600G và RX 6600 XT 8 GB hỗ trợ theo nhu cầu.
 Hãy đọc kỹ file Blueprint đính kèm để nắm toàn bộ bối cảnh, phong cách kể chuyện (sâu sắc, lạnh lùng, triết học, thực tế kỹ thuật, không giật gân rẻ tiền) và hỗ trợ tôi triển khai tiếp phần sản xuất kịch bản / tự động hóa pipeline.
 ```

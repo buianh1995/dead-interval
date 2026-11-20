@@ -1,0 +1,28 @@
+---
+import Artwork from './Artwork.astro';
+
+import type { CaseEntry, EntityEntry } from '../lib/archive';
+interface Props { item: EntityEntry['data']; cases: CaseEntry[] }
+const {item, cases} = Astro.props;
+---
+  <article class="wrap dossier">
+    <div class="dossier-head">
+      <a class="breadcrumb" href="/entities/">Entities</a>
+      <div class="record-line"><span>{item.kind}</span>{item.visibility === 'redacted' && <span class="state sealed">Redacted</span>}</div>
+      <h1>{item.title}</h1><p class="lead">{item.summary}</p>
+    </div>
+    <div class="dossier-grid">
+      <div class="prose">
+        {item.visibility === 'public' ? <>
+          <p class="eyebrow">{item.designation}</p>
+          <slot name="body" />
+          <h2>Observations</h2><ul>{item.observations.map(note => <li>{note}</li>)}</ul>
+        </> : <section class="record-panel"><h2>Public observation</h2><p>{item.publicObservation}</p></section>}
+      </div>
+      <aside class="sidebar"><figure class="portrait"><Artwork art={item.art} /></figure>
+        <section class="record-panel"><h2>Case files</h2><ul class="related">{cases.map(({data}) =>
+          <li><a href={'/cases/' + data.slug + '/'}>{data.title}</a></li>
+        )}</ul></section>
+      </aside>
+    </div>
+  </article>

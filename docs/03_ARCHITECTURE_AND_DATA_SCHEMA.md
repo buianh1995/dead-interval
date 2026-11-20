@@ -15,6 +15,8 @@
 
 Luồng build là **tệp nội dung công khai → loader và schema → kiểm tra quan hệ toàn kho → mô hình hiển thị → route Astro → HTML, CSS và JS tĩnh trong `dist/`**. Chỉ `dist/` được deploy. Client nhận HTML hiện tại và dữ liệu nhỏ cần cho hành vi tại trang. Nội dung bài đọc, nhãn trạng thái, trích dẫn, metadata và liên kết không phụ thuộc vào hydrate.
 
+Phân vai AI, hai máy trạm và quy trình bàn giao từ Studio sang pipeline sản xuất nằm trong [Blueprint, Mục 2](../cosmic_horror_cyber_dystopia_ai_movie_blueprint.md#2-hạ-tầng-phần-cứng-và-phân-vai-kỹ-thuật).
+
 ## 2. Cây thư mục đề xuất khi được duyệt lập trình
 
 ```text

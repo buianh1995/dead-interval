@@ -1,25 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
-import { username } from '../lib/publishing';
-const subscribeUrl = username && 'https://buttondown.com/' + username;
+import SubscribeForm from '../components/SubscribeForm.astro';
 ---
 <Base title="Get release notes | Dead Interval" description={site.signupPitch} indexable={false}>
   <section class="wrap dossier narrow">
     <div class="dossier-head"><h1>Get release notes</h1><p class="lead">{site.signupPitch}</p></div>
     <div class="record-panel">
-      {subscribeUrl ? <>
-        <form action={'https://buttondown.com/api/emails/embed-subscribe/' + username} method="post">
-          <label for="email">Email address</label>
-          <div class="input-row">
-            <input id="email" name="email" type="email" autocomplete="email" required />
-            <input name="embed" type="hidden" value="1" />
-            <button class="button primary" type="submit">Subscribe</button>
-          </div>
-          <p>Check your inbox for a confirmation link after signing up.</p>
-        </form>
-        <a href={subscribeUrl}>Open the Buttondown signup page</a>
-      </> : <p>Subscriptions are unavailable in this preview.</p>}
+      <SubscribeForm id="newsletter" />
     </div>
     <div class="button-row"><a href="/privacy/">Privacy</a><a href="/cases/">Back to case files</a></div>
   </section>

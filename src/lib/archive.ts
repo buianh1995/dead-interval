@@ -1,5 +1,5 @@
 import { getCollection } from 'astro:content';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import type { CollectionEntry } from 'astro:content';
 import { site } from '../data/site';
 
@@ -24,8 +24,16 @@ function checkImage(image: Image, slug: string) {
 
 export async function getArchive() {
   const [cases, entities, signals, scripts] = await Promise.all([
-    getCollection('cases'), getCollection('entities'), getCollection('signals'), getCollection('scripts'),
+    getCollection('cases'), getCollection('entities'), getCollection('signals'), readdirSync('src/content/scripts').some(name => name.endsWith('.md')) ? getCollection('scripts') : Promise.resolve([]),
   ]);
+  return validateArchive({cases,entities,signals,scripts});
+}
+
+export function findScript(scripts: CollectionEntry<'scripts'>[], item: Extract<CaseEntry['data'],{state:'released'}>) {
+  return scripts.find(({data}) => data.caseId === item.id && (!item.scriptId || data.id === item.scriptId));
+}
+
+export function validateArchive({cases,entities,signals,scripts}: Pick<ArchiveInput,'cases'|'entities'|'signals'|'scripts'>) {
   unique([...cases, ...entities, ...signals, ...scripts].map(entry => entry.data.id), 'Archive', 'id');
   for (const group of [cases, entities, signals]) {
     unique(group.map(entry => entry.data.slug), 'Archive', 'slug within collection');
@@ -78,9 +86,10 @@ export async function getArchive() {
       ? cases.some(item => item.data.id === data.caseId && item.data.signalIds.includes(data.id))
       : !data.seo.indexable && !data.seo.ogImage && rewards.has(data.id), data.slug, 'Invalid signal relationship or SEO');
   }
+  unique(scripts.map(({data}) => data.caseId), 'Scripts', 'caseId');
   for (const {data,body} of scripts) {
     requireData(body?.trim() && cases.some(entry => entry.data.state === 'released' &&
-      entry.data.id === data.caseId && entry.data.scriptId === data.id), data.id, 'Script must belong to its released case');
+      entry.data.id === data.caseId && (!entry.data.scriptId || entry.data.scriptId === data.id)), data.id, 'Script must belong to its released case');
   }
   for (const {data} of [...cases, ...entities, ...signals]) {
     if (data.seo.ogImage) requireData(existsSync('public' + data.seo.ogImage), data.slug, 'Missing social image');
@@ -92,3 +101,8 @@ export async function getArchive() {
     signals: signals.sort((a,b) => b.data.publishedOn.localeCompare(a.data.publishedOn) || a.data.id.localeCompare(b.data.id)),
   };
 }
+
+type ArchiveInput = { cases: CaseEntry[]; entities: EntityEntry[]; signals: CollectionEntry<'signals'>[]; scripts: CollectionEntry<'scripts'>[] };
+export type Archive = Awaited<ReturnType<typeof getArchive>>;
+export type CaseEntry = CollectionEntry<'cases'>;
+export type EntityEntry = CollectionEntry<'entities'>;

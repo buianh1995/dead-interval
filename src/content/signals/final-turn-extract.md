@@ -14,4 +14,4 @@ seo: {"title":"Final Turn Extract | Dead Interval","description":"Pair Nine reac
 
 `09-B: Ask again without the word unfinished.`
 
-`Next turn: [blank in both columns]`. The reviewer asked to retain the blank line in the published extract. |
+`Next turn: [blank in both columns]`. The reviewer asked to retain the blank line in the published extract.
