@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Artwork from './Artwork.astro';
+import { copy } from '../data/site';
+interface Props { item: CollectionEntry<'cases'>['data']; heading?: 'h2' | 'h3' }
+const {item, heading: Heading = 'h2'} = Astro.props;
+---
+<article class="case-card">
+  <a href={'/cases/' + item.slug + '/'}>
+    <Artwork art={item.art} />
+    <div class="card-copy">
+      <div class="record-line"><span>{item.number}</span><span class:list={['state', item.state]}>{copy.states[item.state]}</span></div>
+      <Heading>{item.title}</Heading>
+      <p>{item.summary}</p>
+      <span class="text-action">{item.state === 'sealed' ? 'View public excerpt' : 'Read dossier'}</span>
+    </div>
+  </a>
+</article>

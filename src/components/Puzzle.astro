@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { copy } from '../data/site';
+type Case = CollectionEntry<'cases'>['data'];
+type OpenCase = Exclude<Case, {state:'sealed'}>;
+type Signal = CollectionEntry<'signals'>['data'];
+interface Props {
+  puzzle: NonNullable<OpenCase['puzzle']>;
+  evidence: Signal[];
+  reward: Signal;
+}
+const {puzzle,evidence,reward} = Astro.props;
+const rewardPath = '/signals/' + reward.slug + '/';
+---
+<section class="puzzle" id={puzzle.id} data-puzzle data-answer={puzzle.answer}
+  data-neighbors={JSON.stringify(puzzle.neighborSequences)} data-messages={JSON.stringify(copy.puzzle)}>
+  <h2>Compare the logs</h2>
+  <ol class="related">
+    {evidence.map(item => <li><a href={'/signals/' + item.slug + '/'}>{item.title}</a></li>)}
+  </ol>
+  <form novalidate hidden>
+    <label for={puzzle.id + '-answer'}>{puzzle.prompt}</label>
+    <div class="input-row">
+      <input id={puzzle.id + '-answer'} name="sequence" type="text" inputmode="numeric"
+        autocomplete="off" maxlength="15" aria-describedby={puzzle.id + '-result'} />
+      <button class="button primary" type="submit">Check sequence</button>
+    </div>
+  </form>
+  <p id={puzzle.id + '-result'} class="notice" role="status"></p>
+  <div class="hints">
+    {puzzle.hints.map((hint,index) => <details><summary>Hint {index + 1}</summary><p>{hint}</p></details>)}
+  </div>
+  <a class="text-action" data-reward href={rewardPath}>Show the recovered note</a>
+</section>
+<script>
+  for (const panel of document.querySelectorAll<HTMLElement>('[data-puzzle]')) {
+    const form = panel.querySelector('form')!;
+    const input = panel.querySelector('input')!;
+    const status = panel.querySelector('[role="status"]')!;
+    const reward = panel.querySelector('[data-reward]')!;
+    const messages = JSON.parse(panel.dataset.messages!);
+    const neighbors: string[] = JSON.parse(panel.dataset.neighbors!);
+    form.hidden = false;
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const answer = input.value.trim();
+      const correct = answer === panel.dataset.answer;
+      const result = correct ? 'correct' : !/^[1-9]\d{0,14}$/.test(answer) ? 'invalid'
+        : neighbors.includes(answer) ? 'neighbor' : 'wrong';
+      status.textContent = messages[result];
+      input.setAttribute('aria-invalid', String(result === 'invalid'));
+      reward.textContent = correct ? 'Read the recovered note' : 'Show the recovered note';
+    });
+  }
+</script>

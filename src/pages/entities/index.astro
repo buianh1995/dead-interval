@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import Artwork from '../../components/Artwork.astro';
+import { getArchive } from '../../lib/archive';
+const {entities} = await getArchive();
+---
+<Base title="Entities | Dead Interval" description="Meet the people, systems and unidentified presences in the Dead Interval archive.">
+  <section class="wrap listing">
+    <h1>Entities</h1><p class="lead">The people and systems named in the archive.</p>
+    <div class="card-grid">
+      {entities.map(({data:item}) => <article class="case-card"><a href={'/entities/' + item.slug + '/'}>
+        <Artwork art={item.art} /><div class="card-copy">
+          <div class="record-line"><span>{item.kind}</span>{item.visibility === 'redacted' && <span class="state sealed">Redacted</span>}</div>
+          <h2>{item.title}</h2><p>{item.summary}</p><span class="text-action">Read profile</span>
+        </div>
+      </a></article>)}
+    </div>
+  </section>
+</Base>

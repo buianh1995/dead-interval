@@ -1,0 +1,57 @@
+---
+import { absolute } from '../lib/publishing';
+interface Props { path: string; title: string; quote?: {text: string; attribution?: string} }
+const {path,title,quote} = Astro.props;
+const url = absolute(path);
+const quoteText = quote ? '“' + quote.text + '”' + (quote.attribution ? ' — ' + quote.attribution : '') : '';
+const x = new URL('https://x.com/intent/post');
+const reddit = new URL('https://www.reddit.com/submit');
+x.searchParams.set('text', quoteText);
+reddit.searchParams.set('title', title);
+---
+<section class="share-block" aria-label="Share this record" data-share data-url={url} data-quote={quoteText} data-x={x.href} data-reddit={reddit.href}>
+  {quote && <blockquote>{quoteText}</blockquote>}
+  <div class="button-row">
+    <button type="button" data-copy="url" hidden>Copy link</button>
+    {quote && <>
+      <button type="button" data-copy="quote" hidden>Copy quote</button>
+      <a data-network="x" hidden>Share on X</a>
+      <a data-network="reddit" hidden>Share on Reddit</a>
+    </>}
+  </div>
+  <p class="notice" role="status"></p>
+  <label hidden>Copy this text manually <textarea readonly rows="3"></textarea></label>
+  <noscript><p class="notice">Permalink <a href={url}>{url}</a></p></noscript>
+</section>
+<script>
+  for (const panel of document.querySelectorAll<HTMLElement>('[data-share]')) {
+    const url = new URL(panel.dataset.url ?? location.pathname, location.origin).href;
+    const status = panel.querySelector('[role="status"]')!;
+    const fallback = panel.querySelector('label')!;
+    const input = panel.querySelector('textarea')!;
+    for (const button of panel.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        const quote = button.dataset.copy === 'quote';
+        const value = quote ? panel.dataset.quote + '\n' + url : url;
+        fallback.hidden = true;
+        try {
+          await navigator.clipboard.writeText(value);
+          status.textContent = quote ? 'Quote copied.' : 'Link copied.';
+        } catch {
+          input.value = value;
+          fallback.hidden = false;
+          input.focus();
+          input.select();
+          status.textContent = 'Select and copy the text below.';
+        }
+      });
+    }
+    for (const link of panel.querySelectorAll<HTMLAnchorElement>('[data-network]')) {
+      const service = new URL(link.dataset.network === 'x' ? panel.dataset.x! : panel.dataset.reddit!);
+      service.searchParams.set('url', url);
+      link.href = service.href;
+      link.hidden = false;
+    }
+  }
+</script>

@@ -1,0 +1,40 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Artwork from '../../components/Artwork.astro';
+import { getArchive } from '../../lib/archive';
+import { site } from '../../data/site';
+export async function getStaticPaths() {
+  const archive = await getArchive();
+  return archive.entities.map(entry => ({
+    params: {slug: entry.data.slug},
+    props: {entry, cases: archive.cases.filter(item => item.data.entityIds.includes(entry.data.id))},
+  }));
+}
+const {entry, cases} = Astro.props;
+const item = entry.data;
+const Content = item.visibility === 'public' ? (await render(entry)).Content : undefined;
+---
+<Base {...item.seo}>
+  <article class="wrap dossier">
+    <div class="dossier-head">
+      <a class="breadcrumb" href="/entities/">Entities</a>
+      <div class="record-line"><span>{item.kind}</span>{item.visibility === 'redacted' && <span class="state sealed">Redacted</span>}</div>
+      <h1>{item.title}</h1><p class="lead">{item.summary}</p><p class="fiction">{site.description}</p>
+    </div>
+    <div class="dossier-grid">
+      <div class="prose">
+        {item.visibility === 'public' ? <>
+          <p class="eyebrow">{item.designation}</p>
+          {Content && <Content />}
+          <h2>Observations</h2><ul>{item.observations.map(note => <li>{note}</li>)}</ul>
+        </> : <section class="record-panel"><h2>Public observation</h2><p>{item.publicObservation}</p></section>}
+      </div>
+      <aside class="sidebar"><figure class="portrait"><Artwork art={item.art} /></figure>
+        <section class="record-panel"><h2>Case files</h2><ul class="related">{cases.map(({data}) =>
+          <li><a href={'/cases/' + data.slug + '/'}>{data.title}</a></li>
+        )}</ul></section>
+      </aside>
+    </div>
+  </article>
+</Base>

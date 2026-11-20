@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { username, privacyContact } from '../lib/publishing';
+---
+<Base title="Privacy | Dead Interval">
+  <article class="wrap dossier narrow">
+    <div class="dossier-head"><h1>Privacy</h1></div>
+    <div class="prose">
+      <h2>Email subscriptions</h2>
+      {username ? <p>When you subscribe, Buttondown receives your email address to confirm your subscription and send case updates and premiere notices. Use the unsubscribe link in any issue to stop receiving updates. See <a href="https://buttondown.com/legal/privacy">Buttondown’s privacy policy</a>.</p> :
+        <p>Email collection is disabled in this preview.</p>}
+      <h2>Third-party services</h2>
+      <p>Opening an external sharing or media link takes you to the named service. When an episode player is available, it contacts YouTube after you choose to play.</p>
+      {privacyContact && <><h2>Contact</h2><p>Email <a href={'mailto:' + privacyContact}>{privacyContact}</a> for privacy questions.</p></>}
+    </div>
+  </article>
+</Base>

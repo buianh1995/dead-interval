@@ -1,0 +1,35 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Share from '../../components/Share.astro';
+import { getArchive } from '../../lib/archive';
+import { site } from '../../data/site';
+export async function getStaticPaths() {
+  const archive = await getArchive();
+  return archive.signals.map(entry => ({
+    params: {slug: entry.data.slug},
+    props: {entry, dossier: archive.cases.find(item => item.data.id === entry.data.caseId)!.data},
+  }));
+}
+const {entry, dossier} = Astro.props;
+const item = entry.data;
+const {Content} = await render(entry);
+const casePath = '/cases/' + dossier.slug + '/';
+const puzzle = dossier.state === 'sealed' ? undefined : dossier.puzzle;
+const puzzlePath = puzzle?.evidenceSignalIds.includes(item.id) ? casePath + '#' + puzzle.id : undefined;
+---
+<Base {...item.seo}>
+  <article class="wrap dossier narrow">
+    <div class="dossier-head">
+      <a class="breadcrumb" href="/signals/">Signals</a>
+      <p class="record-line">{item.archiveStamp} · {item.format}</p>
+      <h1>{item.title}</h1><p class="lead">{item.summary}</p><p class="fiction">{site.description}</p>
+    </div>
+    {item.presentation === 'puzzle-reward' && <p class="spoiler">Contains puzzle spoilers</p>}
+    <div class="prose evidence"><Content /></div>
+    {item.presentation === 'standard' && <Share path={Astro.url.pathname} title={item.title} quote={item.shareQuote} />}
+    <div class="button-row"><a class="button secondary" href={casePath}>Back to {dossier.title}</a>
+    {puzzlePath && <a class="text-action" href={puzzlePath}>Compare the logs</a>}
+    <a href="/subscribe/">Get release notes</a></div>
+  </article>
+</Base>

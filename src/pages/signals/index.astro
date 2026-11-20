@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArchive } from '../../lib/archive';
+const {signals} = await getArchive();
+---
+<Base title="Signals | Dead Interval" description="Field notes, anomalous transcripts and recovered telemetry from Dead Interval.">
+  <section class="wrap listing">
+    <h1>Signals</h1><p class="lead">Recovered telemetry, field notes and the gaps in between.</p>
+    <div class="signal-list">
+      {signals.filter(({data}) => data.presentation === 'standard').map(({data}) => <article>
+        <p class="record-line">{data.archiveStamp} · {data.format}</p>
+        <h2><a href={'/signals/' + data.slug + '/'}>{data.title}</a></h2><p>{data.summary}</p>
+      </article>)}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { getArchive } from '../lib/archive';
+const featured = (await getArchive()).featured.data;
+---
+<Base title="Record not found | Dead Interval" indexable={false}>
+  <section class="wrap dossier narrow">
+    <div class="dossier-head"><h1>Record not found</h1><p class="lead">This address does not match a record in the archive.</p></div>
+    <div class="button-row"><a class="button primary" href="/cases/">Browse cases</a><a href={'/cases/' + featured.slug + '/'}>Read {featured.title}</a></div>
+  </section>
+</Base>
